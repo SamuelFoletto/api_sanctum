@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ApiResponses;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -19,20 +20,26 @@ class AuthController extends Controller
         $tentativaLogin = auth()->attempt(['email' => $email, 'password' => $password]);
 
         if (!$tentativaLogin) {
-            return response()->json([
-                'error' => 'Não autorizado!'
-            ], 401);
+            return ApiResponses::unauthorized();
         }
 
         $user = auth()->user();
 
         $token = $user->createToken($user->name)->plainTextToken;
 
-        return response()->json([
+
+        return ApiResponses::success([
+            'user' => $user->nome,
+            'email' => $user->email,
             'token' => $token,
         ]);
 
     }
 
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+        return ApiResponses::success("Logout realizado com sucesso!");
+    }
 }
 

@@ -6,15 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/status", function (){
-    return response()->json([
-        "status" => "Executando",
-        "message" => "API está rodando corretamente!"
-    ],
-        200
-    );
-
+    return \App\Services\ApiResponses::success('API sendo executada!');
 });
 
-Route::apiResource('clientes', ClienteController::class);
-
 Route::post("/login", [AuthController::class, "login"]);
+Route::post("/logout", [AuthController::class, "logout"])
+    ->middleware('auth:sanctum');
+
+Route::apiResource('clientes', ClienteController::class)
+    ->middleware('auth:sanctum');

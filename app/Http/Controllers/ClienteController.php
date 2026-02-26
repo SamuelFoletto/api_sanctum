@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Services\ApiResponses;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -10,7 +11,7 @@ class ClienteController extends Controller
 
     public function index()
     {
-        return response()->json(Cliente::all(), 200);
+        return ApiResponses::success(Cliente::all());
     }
 
     public function store(Request $request)
@@ -25,12 +26,7 @@ class ClienteController extends Controller
 
         $cliente = Cliente::create($request->all());
 
-        return response()->json(
-            [
-            'message' => 'Cliente cadastrado com sucesso!',
-            'data' => $cliente
-            ], 200
-        );
+        return ApiResponses::success($cliente);
     }
 
 
@@ -39,11 +35,9 @@ class ClienteController extends Controller
         $cliente = Cliente::find($id);
 
         if($cliente){
-            return response()->json($cliente, 200);
+            return ApiResponses::success($cliente);
         } else {
-            return response()->json([
-                'message' => 'Cliente não foi encontrado!'
-            ], 404);
+            return ApiResponses::error('O cliente não foi localizado!');
         }
     }
 
@@ -61,16 +55,9 @@ class ClienteController extends Controller
         $cliente = Cliente::find($id);
         if($cliente){
             $cliente->update($request->all());
-            return response()->json(
-                [
-                    'message' => 'Cliente atualizado com sucesso!',
-                    'data' => $cliente
-                ], 200
-            );
+            return ApiResponses::success('Cliente atualizado com sucesso!');
         } else {
-            return response()->json([
-                'message' => "Cliente não foi encontrado!"
-            ], 404);
+            return ApiResponses::error('O cliente não foi localizado!');
         }
     }
 
@@ -80,15 +67,9 @@ class ClienteController extends Controller
         $cliente = Cliente::find($id);
         if($cliente){
             $cliente->delete();
-            return response()->json(
-                [
-                    'message' => 'Cliente apagado com sucesso!'
-                ], 200
-            );
+            return ApiResponses::success('Cliente deletado com sucesso!');
         } else {
-            return response()->json([
-                'message' => 'Cliente não foi encontrado!'
-            ], 402);
+            return ApiResponses::error('O cliente não foi localizado!');
         }
     }
 }
